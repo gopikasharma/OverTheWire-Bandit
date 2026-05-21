@@ -1,4 +1,4 @@
-# OverTheWire: Bandit - Security Wargames
+# OverTheWire: Bandit 
 
 **Host:** `bandit.labs.overthewire.org`
 **Port:** `2220`
@@ -40,3 +40,28 @@
 * **Goal:** Find a file stored *somewhere* on the server that is owned by user `bandit7`, owned by group `bandit6`, and exactly 33 bytes in size.
 * **Command:** `find / -user bandit7 -group bandit6 -size 33c 2>/dev/null`
 * **How it worked:** Searching from the root directory `/` hits thousands of files you lack permission to read, cluttering the screen with errors. Adding `2>/dev/null` takes the "standard error" output stream (stream 2) and routes it to the system's black hole (`/dev/null`), leaving only the successful file path cleanly on the screen.
+
+## Level 7 → Level 8
+* **Goal:** Find the password stored next to the word "millionth" inside the large `data.txt` file.
+* **Command:** `bandit7@bandit:~$ grep "millionth" data.txt`
+`millionth	[REDACTED]`
+
+## Level 8 → Level 9
+* **Goal:** Find the password stored in the file `data.txt `and is the only line of text that occurs only once
+* **Command:** `bandit8@bandit:~$ sort data.txt | uniq -u`
+
+
+## Level 9 → Level 10
+* **Goal:** Find the password stored in the file `data.txt` in one of the few human-readable strings, preceded by several ‘=’ characters.
+* **Command:** `bandit9@bandit:~$ strings data.txt |grep "==="`
+
+## Level 10 → Level 11
+* **Goal:** Find the password stored in the file data.txt, which contains base64 encoded data
+* **Command:** `bandit10@bandit:~$ base64 -d data.txt `
+
+
+## Level 11 → Level 12
+* **Goal:** Find the password stored in the file data.txt, where all lowercase (a-z) and uppercase (A-Z) letters have been rotated by 13 positions
+* **Command:** `bandit11@bandit:~$ cat data.txt | tr 'a-zA-Z' 'n-za-mN-ZA-M' `
+
+
