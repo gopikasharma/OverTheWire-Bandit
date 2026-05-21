@@ -1,67 +1,77 @@
-# OverTheWire: Bandit 
+# 🏴 OverTheWire: Bandit — Complete Walkthrough
 
-**Host:** `bandit.labs.overthewire.org`
-**Port:** `2220`
+<div align="center">
 
-## Level 0: The Initial Connection
-* **Goal:** Connect to the game server on a non-standard port using SSH.
-* **Command:** `ssh bandit0@bandit.labs.overthewire.org -p 2220`
+![Bandit](https://img.shields.io/badge/OverTheWire-Bandit-darkgreen?style=for-the-badge&logo=linux&logoColor=white)
+![Progress](https://img.shields.io/badge/Progress-Level%200--12-blue?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
+*A structured, beginner-friendly walkthrough of the OverTheWire Bandit wargame.*
 
-## Level 0 → Level 1
-* **Goal:** Read the password stored in a standard text file named `readme`.
-* **Command:** `cat readme`
+</div>
 
-## Level 1 → Level 2
-* **Goal:** Read a file named `-` located in the home directory.
-* **Command:** `cat ./-`
+---
 
+## 📖 About This Repository
 
-## Level 2 → Level 3
-* **Goal:** Read a file named `spaces in this filename`.
-* **Command:** `cat "./--spaces in this filename--"`
+[OverTheWire Bandit](https://overthewire.org/wargames/bandit/) is the most popular entry-point wargame for learning Linux command-line fundamentals and basic security concepts. Each level presents a challenge that requires you to find a password hidden somewhere on the system using Linux tools.
 
+This repo documents my personal journey through Bandit — not just the commands, but **why they work**. It's structured to be useful both as a personal reference and as a learning resource for others.
 
-## Level 3 → Level 4
-* **Goal:** Find and read a hidden file inside the `inhere` directory.
-* **Command:** `ls -la` then `cat .hidden`
+---
 
-## Level 4 → Level 5
-* **Goal:** Find the one human-readable file among several non-readable data files in the `inhere` directory.
-* **Command:** `cd inhere` then `file ./*` then use `cat ./<filename>` 
+## 🗂️ Repository Structure
 
+```
+overthewire-bandit/
+├── README.md                   ← You are here (overview + quick reference)
+├── levels/
+├── scripts/
+│   └──              ← Helper script to SSH into any level
+└── assets/
+    └──              ← Linux concepts reference sheet
+```
 
-## Level 5 → Level 6
-* **Goal:** Find a file hidden in the `inhere` directory that is human-readable, exactly 1033 bytes in size, and not executable.
-* **Command:** `find . -type f -size 1033c ! -executable`
-* **How it worked:** `find` traverses directories based on properties rather than names. `-type f` restricts the search to files, `-size 1033c` targets exactly 1033 bytes ('c' stands for characters), and `! -executable` uses boolean logic to filter out files that have execute permissions. This pinpointed the exact file needed.
+---
 
-## Level 6 → Level 7
-* **Goal:** Find a file stored *somewhere* on the server that is owned by user `bandit7`, owned by group `bandit6`, and exactly 33 bytes in size.
-* **Command:** `find / -user bandit7 -group bandit6 -size 33c 2>/dev/null`
-* **How it worked:** Searching from the root directory `/` hits thousands of files you lack permission to read, cluttering the screen with errors. Adding `2>/dev/null` takes the "standard error" output stream (stream 2) and routes it to the system's black hole (`/dev/null`), leaving only the successful file path cleanly on the screen.
+## ⚡ Quick Connection Reference
 
-## Level 7 → Level 8
-* **Goal:** Find the password stored next to the word "millionth" inside the large `data.txt` file.
-* **Command:** `bandit7@bandit:~$ grep "millionth" data.txt`
-`millionth	[REDACTED]`
+| Variable | Value |
+|---|---|
+| **Host** | `bandit.labs.overthewire.org` |
+| **Port** | `2220` |
+| **Username pattern** | `banditN` (where N is the level number) |
 
-## Level 8 → Level 9
-* **Goal:** Find the password stored in the file `data.txt `and is the only line of text that occurs only once
-* **Command:** `bandit8@bandit:~$ sort data.txt | uniq -u`
+```bash
+# Generic connection template
+ssh banditN@bandit.labs.overthewire.org -p 2220
 
+# Level 0 (starting point)
+ssh bandit0@bandit.labs.overthewire.org -p 2220
+# Password: bandit0
+```
 
-## Level 9 → Level 10
-* **Goal:** Find the password stored in the file `data.txt` in one of the few human-readable strings, preceded by several ‘=’ characters.
-* **Command:** `bandit9@bandit:~$ strings data.txt |grep "==="`
+---
 
-## Level 10 → Level 11
-* **Goal:** Find the password stored in the file data.txt, which contains base64 encoded data
-* **Command:** `bandit10@bandit:~$ base64 -d data.txt `
+## 🚀 Getting Started
 
+1. Visit [overthewire.org/wargames/bandit](https://overthewire.org/wargames/bandit/) to read the official rules.
+2. Connect to Level 0: `ssh bandit0@bandit.labs.overthewire.org -p 2220` (password: `bandit0`)
+3. Follow along with the level files in the [`levels/`](levels/) directory.
 
-## Level 11 → Level 12
-* **Goal:** Find the password stored in the file data.txt, where all lowercase (a-z) and uppercase (A-Z) letters have been rotated by 13 positions
-* **Command:** `bandit11@bandit:~$ cat data.txt | tr 'a-zA-Z' 'n-za-mN-ZA-M' `
+> **⚠️ Spoiler Policy:** Each level file contains the full solution. Try the level yourself first before reading!
 
+---
 
+## 📚 Useful Resources
+
+- [OverTheWire Bandit](https://overthewire.org/wargames/bandit/) — Official game
+- [explainshell.com](https://explainshell.com) — Paste any command to see it explained
+- [tldr.sh](https://tldr.sh) — Simplified man pages
+- [Linux Command Line Cheatsheet](https://cheatography.com/davechild/cheat-sheets/linux-command-line/)
+
+---
+
+<div align="center">
+<sub>Built while learning. Documented to teach.</sub>
+</div>
