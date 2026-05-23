@@ -60,23 +60,17 @@ A cron job runs as bandit23 and writes the password to a `/tmp` file named after
 ## Solution
 
 ```bash
-# 1. Read the cron job script
+
 cat /usr/bin/cronjob_bandit23.sh
-# → mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
-# → writes password to /tmp/$mytarget
 
-# 2. Reproduce the hash as bandit23 (substitute the username manually)
+
+
 echo I am user bandit23 | md5sum | cut -d ' ' -f 1
-# → [REDACTED]
 
-# 3. Read that file
+
+
 cat /tmp/[REDACTED]
 ```
-
-## Concept
-The script generates the tmp filename dynamically using `whoami` piped through md5sum. Since you can read the script, you can reproduce the exact command with `bandit23` hardcoded to get the filename.
-
-> **Pitfall:** `echo I am user $bandit23` (with `$` before the name) expands to nothing — you need `bandit23` as a plain string, not a variable.
 
 ---
 
