@@ -32,6 +32,8 @@ cat /etc/bandit_pass/bandit14
 ```
 
 ---
+
+
 ## Level 14 → 15
  
 **Objective:** Retrieve the password for `bandit15` by submitting the current level's password to port 30000 on localhost.
@@ -48,4 +50,24 @@ nc localhost 30000
 Correct!
 [REDACTED]
 ```
- 
+
+-----
+
+
+ # Bandit Level 15 → 16
+
+## Goal
+Submit the current level's password to port 30001 on localhost using SSL/TLS encryption to get the next password.
+
+## Solution
+1. SSH into the server: `ssh bandit15@bandit.labs.overthewire.org -p 2220` (and enter the password).
+
+
+
+```bash
+# Connect using openssl and send the bandit15 password
+openssl s_client -quiet -connect localhost:30001
+# paste password, hit Enter → receive next password
+```
+
+> `-quiet` suppresses certificate output. The cert is self-signed so you'll see a verify error (that's fine, it still works).
