@@ -16,15 +16,11 @@ Use a setuid binary `suconnect` that connects to a port you specify, reads a pas
 
 ## Solution
 
-```bash
-
+```
 echo "[REDACTED]" | nc -l -p 4444 &
 
 ./suconnect 4444
-
-
-## Concept
-`suconnect` runs as bandit21 (setuid). It connects to your listener, reads the password you're serving, validates it, and responds with the next one. The `&` backgrounds the `nc` listener so you can run `suconnect` in the same terminal session.
+```
 
 ---
 
@@ -35,7 +31,7 @@ A cron job is running periodically as bandit22. Find what it does and use it to 
 
 ## Solution
 
-```bash
+```
 # 1. Check what cron jobs exist
 ls -la /etc/cron.d/
 
@@ -48,7 +44,7 @@ cat /usr/bin/cronjob_bandit22.sh
 # → copies bandit22's password to a world-readable /tmp file
 
 # 4. Read that file
-cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+cat /tmp/[REDACTED]
 ```
 
 ## Concept
@@ -71,10 +67,10 @@ cat /usr/bin/cronjob_bandit23.sh
 
 # 2. Reproduce the hash as bandit23 (substitute the username manually)
 echo I am user bandit23 | md5sum | cut -d ' ' -f 1
-# → 8ca319486bfbbc3663ea0fbe81326349
+# → [REDACTED]
 
 # 3. Read that file
-cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+cat /tmp/[REDACTED]
 ```
 
 ## Concept
