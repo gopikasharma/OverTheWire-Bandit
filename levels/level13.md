@@ -30,3 +30,22 @@ ssh -i sshkey.private bandit14@bandit.labs.overthewire.org -p 2220
 # 4. Read the password
 cat /etc/bandit_pass/bandit14
 ```
+
+---
+## Level 14 → 15
+ 
+**Objective:** Retrieve the password for `bandit15` by submitting the current level's password to port 30000 on localhost.
+ 
+**What worked:**
+```bash
+nc localhost 30000
+# paste the bandit14 password, then hit Enter
+```
+ 
+**Output:**
+```
+[REDACTED]
+Correct!
+[REDACTED]
+```
+ 
