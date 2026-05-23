@@ -53,3 +53,31 @@ cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
 
 ## Concept
 Cron runs scripts on a schedule. The script runs as bandit22 and writes the password to a `/tmp` file with `chmod 644` (world-readable). You just need to find and read that file.
+
+---
+
+# Bandit Level 22 → 23
+
+## Goal
+A cron job runs as bandit23 and writes the password to a `/tmp` file named after an md5 hash. Figure out the filename and read it.
+
+## Solution
+
+```bash
+# 1. Read the cron job script
+cat /usr/bin/cronjob_bandit23.sh
+# → mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+# → writes password to /tmp/$mytarget
+
+# 2. Reproduce the hash as bandit23 (substitute the username manually)
+echo I am user bandit23 | md5sum | cut -d ' ' -f 1
+# → 8ca319486bfbbc3663ea0fbe81326349
+
+# 3. Read that file
+cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+```
+
+## Concept
+The script generates the tmp filename dynamically using `whoami` piped through md5sum. Since you can read the script, you can reproduce the exact command with `bandit23` hardcoded to get the filename.
+
+> **Pitfall:** `echo I am user $bandit23` (with `$` before the name) expands to nothing — you need `bandit23` as a plain string, not a variable.
