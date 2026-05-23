@@ -69,6 +69,7 @@ ssh bandit0@bandit.labs.overthewire.org -p 2220
 - [explainshell.com](https://explainshell.com) — Paste any command to see it explained
 - [tldr.sh](https://tldr.sh) — Simplified man pages
 - [Linux Command Line Cheatsheet](https://cheatography.com/davechild/cheat-sheets/linux-command-line/)
+-https://status.overthewire.org/
 
 ---
 

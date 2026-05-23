@@ -1,5 +1,5 @@
 
- Bandit CTF Writeups: Levels 7 to 12
+# Bandit CTF Writeups: Levels 7 to 12
 
 This document contains the objectives, terminal commands, and system-level logic for solving levels 7 through 12  of the OverTheWire Bandit wargame.
 
@@ -132,7 +132,7 @@ cat data9.bin
 
 Instead of manually checking file types, you can use a Bash script to read the file signature, rename the file, and run the correct decompression tool automatically until it finds plain text.
 
-> **Note:** The full source code for this script is located in this repository at [`scripts/extractor.sh`](scripts/extractor.sh).
+> **Note:** The full source code for this script is located in this repository at [`scripts/extractor.sh`](../scripts/extractor.sh)
 
 ### Running the Automation
 To use the script, ensure you have reversed the hexdump first, grant the script execution permissions, and pass the binary file as an argument.
