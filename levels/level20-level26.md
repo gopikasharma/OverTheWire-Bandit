@@ -110,7 +110,7 @@ cat /etc/passwd | grep bandit26
 
 cat /usr/bin/showtext
 
-# 4. SSH in using the key
+
 ssh -i bandit26.sshkey bandit26@bandit.labs.overthewire.org -p 2220
 
 # 5. While in `more` pager, press v to open vim
@@ -136,3 +136,6 @@ Use a setuid binary in the home directory to read the password for bandit27.
 
 ./bandit27-do cat /etc/bandit_pass/bandit27
 ```
+
+---
+
