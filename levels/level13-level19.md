@@ -65,12 +65,11 @@ Submit the current level's password to port 30001 on localhost using SSL/TLS enc
 
 
 ```bash
-# Connect using openssl and send the bandit15 password
+
 openssl s_client -quiet -connect localhost:30001
-# paste password, hit Enter → receive next password
+
 ```
 
-> `-quiet` suppresses certificate output. The cert is self-signed so you'll see a verify error (that's fine, it still works).
 
 ---
 
@@ -83,21 +82,19 @@ Find a port in range 31000–32000 that speaks SSL/TLS and returns credentials (
 ## Solution
 
 ```bash
-# 1. Scan for open ports in range and detect services
+
 nmap -p 31000-32000 -sV localhost
-# Look for ssl/* services — only one will respond differently (not echo)
-# Result: port 31790 is ssl/unknown (not echo)
 
-# 2. Connect via SSL and submit password
+
+
 openssl s_client -quiet -connect localhost:31790
-# paste bandit16 password → receive RSA private key
 
-# 3. Save the key on your local machine
+
+
 nano key17.key
-# paste the full RSA key block including BEGIN/END lines
+
 chmod 600 key17.key
 
-# 4. Login as bandit17
 ssh -i key17.key bandit17@bandit.labs.overthewire.org -p 2220
 ```
 
@@ -144,5 +141,3 @@ Use a setuid binary in the home directory to read the password for bandit20.
 ./bandit20-do cat /etc/bandit_pass/bandit20
 ```
 
-## Concept
-The binary `bandit20-do` has the **setuid** bit set (`-rwsr-x---`), meaning it runs with the permissions of its *owner* (`bandit20`) regardless of who executes it. This lets bandit19 read a file normally only accessible to bandit20.
