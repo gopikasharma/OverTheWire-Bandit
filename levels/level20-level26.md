@@ -1,4 +1,4 @@
-# Bandit CTF Writeups: Levels 20 to 25
+# Bandit CTF Writeups: Levels 20 to 26
 
 **Host:** `bandit.labs.overthewire.org`  
 **Port:** `2220`
@@ -96,3 +96,43 @@ done | nc localhost 30002 | grep -vi "wrong"
 ```
 
 ---
+
+# Bandit Level 25 → 26
+
+## Goal
+Log into bandit26 using the SSH key provided. bandit26's shell is not `/bin/bash` — figure out what it is and how to escape it.
+
+## Solution
+
+```bash
+cat /etc/passwd | grep bandit26
+
+
+cat /usr/bin/showtext
+
+# 4. SSH in using the key
+ssh -i bandit26.sshkey bandit26@bandit.labs.overthewire.org -p 2220
+
+# 5. While in `more` pager, press v to open vim
+# 6. In vim, set the shell and open it:
+:set shell=/bin/bash
+:shell
+```
+
+You now have a shell as bandit26.
+
+----
+
+# Bandit Level 26 → 27
+
+## Goal
+Use a setuid binary in the home directory to read the password for bandit27.
+
+## Solution
+
+```bash
+./bandit27-do
+
+
+./bandit27-do cat /etc/bandit_pass/bandit27
+```

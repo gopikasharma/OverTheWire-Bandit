@@ -18,16 +18,16 @@ This document contains the objectives, terminal commands, and system-level logic
 * **Solution:** 
 
 ```bash
-# 1. Login as bandit13
+
 ssh bandit13@bandit.labs.overthewire.org -p 2220
 
-# 2. Copy the private key to your local machine (run this on your local terminal)
+ 
 scp -P 2220 bandit13@bandit.labs.overthewire.org:~/sshkey.private .
 
-# 3. Login as bandit14 using the key
+
 ssh -i sshkey.private bandit14@bandit.labs.overthewire.org -p 2220
 
-# 4. Read the password
+
 cat /etc/bandit_pass/bandit14
 ```
 
