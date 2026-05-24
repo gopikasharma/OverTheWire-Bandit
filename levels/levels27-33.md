@@ -1,16 +1,14 @@
-# Bandit CTF Writeups: Levels 27 - 33
+# Bandit CTF Writeups: Levels 27 to 33
 
-**Host:** `bandit.labs.overthewire.org`  
-**Port:** `2220`
+OverTheWire Bandit wargame solutions — objectives, commands, and notes.
+
+**Host:** `bandit.labs.overthewire.org` | **Port:** `2220`
 
 ---
 
-# Bandit Level 27 → 28
+## Level 27 → 28
 
-## Goal
-Clone a git repository and find the password inside it.
-
-## Solution
+Clone the repository and read the README.
 
 ```bash
 git clone ssh://bandit27-git@bandit.labs.overthewire.org:2220/home/bandit27-git/repo
@@ -20,47 +18,37 @@ cat README
 
 ---
 
+## Level 28 → 29
 
-# Bandit Level 28 → 29
-
-## Goal
-Clone a git repository. The password has been redacted in the latest commit — find it in the git history.
-
-## Solution
+The password was redacted in a later commit. Check the full diff history.
 
 ```bash
 git clone ssh://bandit28-git@bandit.labs.overthewire.org:2220/home/bandit28-git/repo
 cd repo
-cat README.md
 git log -p
 ```
 
+`git log -p` shows every commit's diff, including lines that were removed — where the password was.
 
-----
+---
 
-# Bandit Level 29 → 30
+## Level 29 → 30
 
-## Goal
-Clone a git repository. The password isn't in the main branch — check other branches.
-
-## Solution
+The password isn't on `master`. List all branches and check `dev`.
 
 ```bash
 git clone ssh://bandit29-git@bandit.labs.overthewire.org:2220/home/bandit29-git/repo
 cd repo
-cat README.md
 git branch -a
 git checkout dev
 git log -p
 ```
+
 ---
 
-# Bandit Level 30 → 31
+## Level 30 → 31
 
-## Goal
-Clone a git repository. No useful history, no extra branches — the password is hidden in a git tag.
-
-## Solution
+No useful history, no extra branches. The password is stored in a git tag.
 
 ```bash
 git clone ssh://bandit30-git@bandit.labs.overthewire.org:2220/home/bandit30-git/repo
@@ -71,37 +59,28 @@ git show secret
 
 ---
 
-# Bandit Level 31 → 32
+## Level 31 → 32
 
-## Goal
-Push a specific file to the remote repository. The catch: `.gitignore` blocks `*.txt` files.
-
-## Solution
+Push a file to the remote repo. `.gitignore` blocks `*.txt`, so force-add it.
 
 ```bash
 git clone ssh://bandit31-git@bandit.labs.overthewire.org:2220/home/bandit31-git/repo
 cd repo
-cat README.md
-cat .gitignore
 echo 'May I come in?' > key.txt
 git add -f key.txt
 git commit -m "add key.txt"
 git push origin master
 ```
 
+The password is returned by the server in the push output, not stored in the repo.
+
 ---
 
-# Bandit Level 32 → 33
+## Level 32 → 33
 
-## Goal
-Escape an "uppercase shell" that converts all input to uppercase before executing it, making normal commands fail.
-
-## Solution
+The shell converts all input to uppercase before executing, so normal commands fail. Shell variable expansion happens before the uppercase transform — `$0` expands to the current shell name and spawns a new `sh` session.
 
 ```bash
 $0
 cat /etc/bandit_pass/bandit33
 ```
-
-## Concept
-The uppercase shell converts everything you type to uppercase, so `ls` becomes `LS`, `cat` becomes `CAT` — all fail with "Permission denied". However, special shell variables like `$0` are expanded *before* the uppercasing happens. `$0` holds the name of the current shell, so typing `$0` spawns a new `sh` session, escaping the uppercase restriction.
